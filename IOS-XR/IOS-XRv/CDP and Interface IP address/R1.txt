@@ -1,0 +1,32 @@
+1. 'show run int f0/0' output
+
+R1#show run int f0/0
+Building configuration...
+
+Current configuration : 96 bytes
+!
+interface FastEthernet0/0   
+  ip address 192.168.0.1 255.255.255.0   
+  duplex auto  
+  speed auto
+end
+
+2. 'ping 192.168.0.2' IOS-XRv output
+
+R1#ping 192.168.0.2
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.0.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 20/35/60 ms
+R1#
+
+3. 'Show cdp neighbors' output
+
+R1#show cdp neighbors
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater
+
+Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+ios              Fas 0/0            163          R        IOS XRv S Gig 0/0/0/0
+R1#
