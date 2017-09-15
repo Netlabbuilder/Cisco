@@ -1,0 +1,88 @@
+1. 'show run' output before changes
+
+RP/0/0/CPU0:ios#show run
+Fri Sep 15 16:59:01.835 UTC
+Building configuration...
+!! IOS XR Configuration 6.1.2
+!! No configuration change since last restart
+!
+interface MgmtEth0/0/CPU0/0
+shutdown
+!
+interface GigabitEthernet0/0/0/0
+shutdown
+!
+interface GigabitEthernet0/0/0/1
+shutdown
+!
+interface GigabitEthernet0/0/0/2 
+shutdown
+!
+end
+
+RP/0/0/CPU0:ios#
+
+2. Enable cdp and configure IPv4 address 192.168.0.2/24 on interface GigabitEthernet0/0/0/0
+
+RP/0/0/CPU0:ios#conf t
+Fri Sep 15 17:01:28.685 UTC
+RP/0/0/CPU0:ios(config)#cdp
+RP/0/0/CPU0:ios(config)#int GigabitEthernet0/0/0/0
+RP/0/0/CPU0:ios(config-if)#cdp
+RP/0/0/CPU0:ios(config-if)#ipv4 address 192.168.0.2/24
+RP/0/0/CPU0:ios(config-if)#no shut
+RP/0/0/CPU0:ios(config-if)#commit
+Fri Sep 15 17:06:58.542 UTC
+RP/0/0/CPU0:Sep 15 17:06:58.622 : ifmgr[228]: %PKT_INFRA-LINK-3-UPDOWN : Interface GigabitEthernet0/0/0/0, changed state to Down
+RP/0/0/CPU0:Sep 15 17:06:58.652 : ifmgr[228]: %PKT_INFRA-LINK-3-UPDOWN : Interface GigabitEthernet0/0/0/0, changed state to Up
+RP/0/0/CPU0:ios(config-if)#end
+RP/0/0/CPU0:ios#
+
+3. 'show ip int brief' output
+
+RP/0/0/CPU0:ios#show ip int brief
+Fri Sep 15 17:12:52.868 UTC
+Interface                      IP-Address      Status          Protocol Vrf-Name
+MgmtEth0/0/CPU0/0              unassigned      Shutdown        Down     default
+GigabitEthernet0/0/0/0         192.168.0.2     Up              Up       default
+GigabitEthernet0/0/0/1         unassigned      Shutdown        Down     default
+GigabitEthernet0/0/0/2         unassigned      Shutdown        Down     default
+
+4. Ping R1
+
+RP/0/0/CPU0:ios#ping 192.168.0.1
+Fri Sep 15 17:12:56.118 UTC
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.0.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 9/9/9 ms
+
+5. 'show cdp neighbors' output
+
+RP/0/0/CPU0:ios#show cdp neighbors
+Fri Sep 15 17:12:59.088 UTC
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge                  
+                  S - Switch, H - Host, I - IGMP, r - Repeater
+Device ID       Local Intrfce    Holdtme Capability Platform  Port ID
+R1              Gi0/0/0/0        137     R S I      Cisco 269 Fa0/0
+RP/0/0/CPU0:ios#
+
+1. 'show run' output before changes
+RP/0/0/CPU0:ios#show runFri Sep 15 16:59:01.835 UTC
+Building configuration...!! IOS XR Configuration 6.1.2!! No configuration change since last restart
+!
+cdp
+interface MgmtEth0/0/CPU0/0
+shutdown
+!
+interface GigabitEthernet0/0/0/0
+ cdp
+ ipv4 address 192.168.0.2 255.255.255.0
+!
+interface GigabitEthernet0/0/0/1
+shutdown
+!
+interface GigabitEthernet0/0/0/2 
+shutdown
+!
+end
