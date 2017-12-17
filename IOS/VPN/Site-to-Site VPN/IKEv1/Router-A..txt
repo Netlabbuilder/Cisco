@@ -1,0 +1,141 @@
+Building configuration...
+
+Current configuration : 2063 bytes
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname Router-A
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+!
+!
+no ip domain lookup
+!
+multilink bundle-name authenticated
+!
+archive
+ log config
+  hidekeys
+!
+crypto isakmp policy 10
+ encr aes 256
+ hash md5
+ authentication pre-share
+ group 5
+crypto isakmp key Netlabbuilder address 10.12.85.2
+!
+!
+crypto ipsec transform-set Netlab esp-aes esp-md5-hmac
+!
+crypto map VPN 1 ipsec-isakmp
+ set peer 10.12.85.2
+ set transform-set Netlab
+ match address VPN_traffic
+!
+!
+!
+ip tcp synwait-time 5
+!
+!
+!
+!
+interface FastEthernet0/0
+ description outside
+ ip address 13.1.87.2 255.255.255.248
+ ip nat outside
+ ip virtual-reassembly
+ duplex auto
+ speed auto
+ crypto map VPN
+!
+interface FastEthernet0/1
+ description inside
+ ip address 192.168.1.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Serial2/0
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/1
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/2
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/3
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 13.1.87.1
+!
+!
+no ip http server
+no ip http secure-server
+ip nat inside source list NAT_outside interface FastEthernet0/0 overload
+!
+ip access-list extended NAT_outside
+ deny   ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+ permit ip 192.168.1.0 0.0.0.255 any
+ip access-list extended VPN_traffic
+ permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+!
+no cdp log mismatch duplex
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ login
+!
+!
+end
