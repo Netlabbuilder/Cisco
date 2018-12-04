@@ -67,7 +67,7 @@ Device ID       Local Intrfce    Holdtme Capability Platform  Port ID
 R1              Gi0/0/0/0        137     R S I      Cisco 269 Fa0/0
 RP/0/0/CPU0:ios#
 
-6. 'show run' output before changes
+6. 'show run' output after changes
 
 RP/0/0/CPU0:ios#show run
 Fri Sep 15 16:59:01.835 UTC
